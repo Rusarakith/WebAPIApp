@@ -9,6 +9,8 @@ import {
 } from "@mui/material/styles";
 import Login from "./Components/Pages/Login";
 import Home from "./Components/Pages/Home"
+import ForgotPassword from "./Components/Pages/ForgotPassword";
+import ResetPassword from "./Components/ResetPassword";
 import AuthContext from "./Store/AuthManager";
 
 let theme = createTheme({});
@@ -34,6 +36,14 @@ function App() {
             path="/"
             element={
               !authCtx.isLoggedIn ? <Login /> : <Home />}
+          />
+          <Route
+            path="/forgotPassword"
+            element={<ForgotPassword />}
+          />
+          <Route
+            path="/resetPassword"
+            element={<ResetPassword />}
           />
           <Route
 
