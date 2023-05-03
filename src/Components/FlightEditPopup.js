@@ -67,6 +67,7 @@ const FlightEditPopup = ({ title, isOpen, onClose, data, onEdit }) => {
 
     const onUpdateHandler = () => {
         let flightObject = {
+            id:data[0]._id,
             flightNo: flightNo,
             departureDestination: departureDestination,
             arrivalDestination: arrivalDestination,
