@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { isMobile, isMobileOnly, isTablet } from 'react-device-detect';
-
 import {
   Dialog,
   DialogActions,
@@ -58,7 +56,7 @@ const Modal = ({
   //styles
   const styles = {
     button: {
-      backgroundColor: "#B1001D",
+      backgroundColor: "#000",
       borderRadius: "0",
       color: "white",
       height: "56px",
@@ -70,7 +68,7 @@ const Modal = ({
     cancelBtn: {
       backgroundColor: "#CFCFCF ",
       borderRadius: "0",
-      color: "white",
+      color: "black",
       height: "56px",
       textAlign: "center",
       width: "200px",
@@ -79,7 +77,7 @@ const Modal = ({
     closeBtnWeb: {
       backgroundColor: "#CFCFCF",
       borderRadius: "0",
-      color: "white",
+      color: "black",
       height: "56px",
       textAlign: "center",
       width: "200px",
@@ -187,7 +185,7 @@ const Modal = ({
             />}
 
             <Button
-              style={isMobile ? ((isMobileOnly ? styles.closeBtnMobile : styles.closeBtn)) : styles.closeBtnWeb}
+              style={styles.closeBtnWeb}
               fullWidth
               onClick={modalCloseHandler}
             >
