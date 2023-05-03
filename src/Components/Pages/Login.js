@@ -115,7 +115,11 @@ function Login() {
             console.log(json)
             authCtx.login(result.token, json.exp, json.username);
 
-            navigate("/Home", { replace: true });
+            if(json.role === "Backoffice Staff"){
+                navigate("/flights", { replace: true });
+            }
+
+            // navigate("/Home", { replace: true });
           } else {
             enqueueSnackbar(result.message, {
               variant: Error,

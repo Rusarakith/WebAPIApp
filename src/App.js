@@ -11,6 +11,9 @@ import Login from "./Components/Pages/Login";
 import Home from "./Components/Pages/Home"
 import ForgotPassword from "./Components/Pages/ForgotPassword";
 import ResetPassword from "./Components/ResetPassword";
+import Flights from "./Components/Pages/Flights";
+import Hotels from "./Components/Pages/Hotels";
+import Packages from "./Components/Pages/Packages";
 import AuthContext from "./Store/AuthManager";
 
 let theme = createTheme({});
@@ -44,6 +47,18 @@ function App() {
           <Route
             path="/resetPassword"
             element={<ResetPassword />}
+          />
+          <Route
+            path="/flights"
+            element={!authCtx.isLoggedIn ? <Login /> : <Flights />}
+          />
+          <Route
+            path="/hotels"
+            element={!authCtx.isLoggedIn ? <Login /> : <Hotels />}
+          />
+          <Route
+            path="/packages"
+            element={!authCtx.isLoggedIn ? <Login /> : <Packages />}
           />
           <Route
 
