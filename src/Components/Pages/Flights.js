@@ -7,13 +7,14 @@ import Container from "@mui/material/Container";
 import { useSnackbar } from "notistack";
 import FullPageSpinner from "../../Components/Layout/FullPageSpinner";
 import { TextField, Grid } from "@mui/material";
-import { deleteFlight, getAllFlights, updateFlight } from "../../Apis/Flight.api";
+import { addFlight, deleteFlight, getAllFlights, updateFlight } from "../../Apis/Flight.api";
 import { Error, MsgError, Success } from "../../Common/Constant";
 import TopNavigation from "../Layout/TopNavigation";
 import FlightEditPopup from "../FlightEditPopup";
 import AuthContext from '../../Store/AuthManager';
 import ConfirmationPopup from "../Layout/ConfirmationPopup";
-
+import AddIcon from '@mui/icons-material/Add';
+import FlightAddPopup from "../FlightAddPopup";
 const styles = {
     button: {
         backgroundColor: "#08ee65",
@@ -58,6 +59,7 @@ const Flights = () => {
     const [selectedFlightNo, setSelectedFlightNo] = useState("");
     const [editPopupOpen, setEditPopupOpen] = useState(false);
     const [deletePopupOpen, setDeletePopupOpen] = useState(false);
+    const [addFlightPopupOpen, setAddFlightPopupOpen] = useState(false);
     const authCtx = useContext(AuthContext);
     const { enqueueSnackbar } = useSnackbar();
 
@@ -288,6 +290,32 @@ const Flights = () => {
 
     }
 
+    const onFlightAdd = (fligthData) => {
+        setAddFlightPopupOpen(false);
+        setIsLoading(true);
+        addFlight(fligthData, authCtx.token)
+            .then((result) => {
+                setIsLoading(false);
+                if (result.status === 200) {
+                    setRefreshgrid(refreshGrid + 1)
+                    enqueueSnackbar(result.message, {
+                        variant: Success,
+                    });
+                } else {
+                    enqueueSnackbar(result.message, {
+                        variant: Error,
+                    });
+                }
+            })
+            .catch((err) => {
+                setIsLoading(false);
+                enqueueSnackbar(MsgError, {
+                    variant: Error,
+                });
+            });
+
+    }
+
     const deleteFlightHandler = () => {
         setDeletePopupOpen(false);
         setIsLoading(true);
@@ -304,7 +332,7 @@ const Flights = () => {
                     });
                 } else {
                     enqueueSnackbar(result.message, {
-                        variant:Error ,
+                        variant: Error,
                     });
                 }
             })
@@ -316,6 +344,10 @@ const Flights = () => {
             });
     }
 
+    const addFlightPopupOpenHandler = () => {
+        setAddFlightPopupOpen(true);
+    }
+
     return (
         <>
             {isLoading && <FullPageSpinner />}
@@ -323,13 +355,25 @@ const Flights = () => {
                 <TopNavigation />
                 <Grid item xs={12} lg={12} sx={{ pt: 10, display: "flex" }}>
                     <Grid item xs={8} sx={{ display: "flex", width: "100%" }}>
-                        <Typography
-                            variant=""
-                            component=""
-                            sx={{ color: "#B0B0B0", fontSize: "20px", fontWeight: "bold" }}
-                        >
-                            Flight List
-                        </Typography>
+                        <Grid>
+                            <Typography
+                                variant=""
+                                component=""
+                                sx={{ color: "#B0B0B0", fontSize: "20px", fontWeight: "bold" }}
+                            >
+                                Flight List
+                            </Typography>
+                        </Grid>
+                        <Grid paddingLeft={3} paddingBottom={2}>
+                            <Button
+                                variant="contained"
+                                startIcon={<AddIcon />}
+                                sx={{ backgroundColor: "green" }}
+                                onClick={addFlightPopupOpenHandler}
+                            >
+                                Add New Flight
+                            </Button>
+                        </Grid>
                     </Grid>
                     <Grid container direction={"row"} item xs={4} lg={4}>
                         <Grid container direction={"row"} item xs={12} lg={12}>
@@ -371,6 +415,18 @@ const Flights = () => {
                         isOpen={editPopupOpen}
                         onClose={setEditPopupOpen}
                         onEdit={onFlightEdit}
+                    />
+                ) : (
+                    <></>
+                )
+            }
+            {
+                addFlightPopupOpen ? (
+                    <FlightAddPopup
+                        title="FLIGHT ADD POPUP"
+                        isOpen={addFlightPopupOpen}
+                        onClose={setAddFlightPopupOpen}
+                        onAdd={onFlightAdd}
                     />
                 ) : (
                     <></>
