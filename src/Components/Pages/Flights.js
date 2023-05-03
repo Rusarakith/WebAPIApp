@@ -7,9 +7,10 @@ import Container from "@mui/material/Container";
 import { useSnackbar } from "notistack";
 import FullPageSpinner from "../../Components/Layout/FullPageSpinner";
 import { TextField, Grid } from "@mui/material";
-import { getAllFlights } from "../../Apis/Flight.api";
-import { MsgError } from "../../Common/Constant";
+import { getAllFlights, updateFlight } from "../../Apis/Flight.api";
+import { MsgError, Success } from "../../Common/Constant";
 import TopNavigation from "../Layout/TopNavigation";
+import FlightEditPopup from "../FlightEditPopup";
 import AuthContext from '../../Store/AuthManager';
 
 const styles = {
@@ -49,11 +50,11 @@ const styles = {
 const Flights = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [refreshGrid, setRefreshgrid] = useState(1);
-    const [filterUniId, setFilterUniId] = useState("");
+    const [flightNo, setFlightNo] = useState("");
     const [filteredData, setFilteredData] = useState([]);
     const [gridData, setGridData] = useState([]);
-    const [selectedId, setSelectedId] = useState([]);
-    const [updateStatus, setUpdateStatus] = useState("");
+    const [editFlightData, setEditFlightData] = useState();
+    const [editPopupOpen, setEditPopupOpen] = useState(false);
     const authCtx = useContext(AuthContext);
     const { enqueueSnackbar } = useSnackbar();
 
@@ -128,7 +129,7 @@ const Flights = () => {
         },
         {
             field: "isActive",
-            width:100,
+            width: 100,
             renderCell: (params) => {
                 if (params.row.isActive != true) {
                     return (
@@ -172,8 +173,9 @@ const Flights = () => {
             sortable: false,
             renderCell: (params) => {
                 return (<Button
-                    sx={{ backgroundColor: "black", color: "white", height:"30px" }}
+                    sx={{ backgroundColor: "black", color: "white", height: "30px" }}
                     tabIndex={params.hasFocus ? 0 : -1}
+                    onClick={() => { editFlightHandler(params) }}
                 >
                     EDIT
                 </Button>)
@@ -188,6 +190,7 @@ const Flights = () => {
                 if (result.status === 200) {
                     setFilteredData(result.data);
                     setGridData(result.data);
+                    console.log(result.data)
                 }
                 else {
                 }
@@ -202,11 +205,11 @@ const Flights = () => {
     }, [refreshGrid])
 
     useEffect(() => {
-        if (filterUniId.trim()) {
-            const filterStudentsDetailTimer = setTimeout(() => {
-                if (filterUniId.trim()) {
+        if (flightNo.trim()) {
+            const filterFlightDetailTimer = setTimeout(() => {
+                if (flightNo.trim()) {
                     const result = gridData.filter((item) =>
-                        item.flightNo.toLowerCase().includes(filterUniId.toLowerCase())
+                        item.flightNo.toLowerCase().includes(flightNo.toLowerCase())
                     );
                     setFilteredData(result);
                 } else {
@@ -215,20 +218,52 @@ const Flights = () => {
             }, 250);
 
             return () => {
-                clearTimeout(filterStudentsDetailTimer);
+                clearTimeout(filterFlightDetailTimer);
             };
         }
         else {
             setFilteredData([...gridData])
         }
 
-    }, [filterUniId]);
+    }, [flightNo]);
 
     const filterChangeHandler = (e) => {
-        setFilterUniId(e.target.value);
+        setFlightNo(e.target.value);
     };
 
+    const editFlightHandler = (params) => {
+        const flight = gridData.filter((item) =>
+            item.flightNo === params.row.flightNo);
 
+        setEditFlightData(flight);
+        setEditPopupOpen(true);
+    }
+
+    const onFlightEdit = (fligthData) => {
+        setEditPopupOpen(false);
+        setIsLoading(true);
+        updateFlight(fligthData)
+            .then((result) => {
+                setIsLoading(false);
+                if (result.status === 200) {
+                    setRefreshgrid(refreshGrid + 1)
+                    enqueueSnackbar(result.message, {
+                        variant: Success,
+                    });
+                } else {
+                    enqueueSnackbar(result.message, {
+                        variant: Error,
+                    });
+                }
+            })
+            .catch((err) => {
+                setIsLoading(false);
+                enqueueSnackbar(MsgError, {
+                    variant: Error,
+                });
+            });
+
+    }
 
     return (
         <>
@@ -254,7 +289,7 @@ const Flights = () => {
                                 variant="outlined"
                                 fullWidth={false}
                                 onChange={filterChangeHandler}
-                                value={filterUniId}
+                                value={flightNo}
                             />
                         </Grid>
                     </Grid>
@@ -277,6 +312,19 @@ const Flights = () => {
                     </div>
                 </div>
             </Container>
+            {
+                editPopupOpen ? (
+                    <FlightEditPopup
+                        title="FLIGHT EDIT POPUP"
+                        data={editFlightData}
+                        isOpen={editPopupOpen}
+                        onClose={setEditPopupOpen}
+                        onEdit={onFlightEdit}
+                    />
+                ) : (
+                    <></>
+                )
+            }
         </>
     );
 };
