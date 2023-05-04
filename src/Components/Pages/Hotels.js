@@ -14,7 +14,7 @@ import AuthContext from '../../Store/AuthManager';
 import ConfirmationPopup from "../Layout/ConfirmationPopup";
 import AddIcon from '@mui/icons-material/Add';
 import HotelEditPopup from "../HotelEditPopup";
-import { addHotel, getAllHotels, updateHotel } from "../../Apis/Hotel.api";
+import { addHotel, deleteHotel, getAllHotels, updateHotel } from "../../Apis/Hotel.api";
 import HotelAddPopup from "../HotelAddPopup";
 const styles = {
     button: {
@@ -291,7 +291,7 @@ const Hotels = () => {
         let hotelObject = {
             'hotelName': selectedHotelName
         };
-        deleteFlight(hotelObject, authCtx.token)
+        deleteHotel(hotelObject, authCtx.token)
             .then((result) => {
                 setIsLoading(false);
                 if (result.status === 200) {

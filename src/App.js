@@ -15,6 +15,7 @@ import Flights from "./Components/Pages/Flights";
 import Hotels from "./Components/Pages/Hotels";
 import Packages from "./Components/Pages/Packages";
 import AuthContext from "./Store/AuthManager";
+import Users from "./Components/Pages/Users";
 
 let theme = createTheme({});
 theme = responsiveFontSizes(theme);
@@ -59,6 +60,10 @@ function App() {
           <Route
             path="/packages"
             element={!authCtx.isLoggedIn || authCtx.userRole != "Backoffice Staff" ? <Login /> : <Packages />}
+          />
+          <Route
+            path="/users"
+            element={!authCtx.isLoggedIn || authCtx.userRole != "Admin" ? <Login /> : <Users />}
           />
           <Route
 
