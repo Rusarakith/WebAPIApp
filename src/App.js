@@ -50,15 +50,15 @@ function App() {
           />
           <Route
             path="/flights"
-            element={!authCtx.isLoggedIn ? <Login /> : <Flights />}
+            element={!authCtx.isLoggedIn || authCtx.userRole != "Backoffice Staff" ? <Login /> : <Flights />}
           />
           <Route
             path="/hotels"
-            element={!authCtx.isLoggedIn ? <Login /> : <Hotels />}
+            element={!authCtx.isLoggedIn || authCtx.userRole != "Backoffice Staff" ? <Login /> : <Hotels />}
           />
           <Route
             path="/packages"
-            element={!authCtx.isLoggedIn ? <Login /> : <Packages />}
+            element={!authCtx.isLoggedIn || authCtx.userRole != "Backoffice Staff" ? <Login /> : <Packages />}
           />
           <Route
 

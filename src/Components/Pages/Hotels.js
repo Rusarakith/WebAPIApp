@@ -10,12 +10,12 @@ import { TextField, Grid } from "@mui/material";
 import { addFlight, deleteFlight, getAllFlights, updateFlight } from "../../Apis/Flight.api";
 import { Error, MsgError, Success } from "../../Common/Constant";
 import TopNavigation from "../Layout/TopNavigation";
-import FlightEditPopup from "../FlightEditPopup";
 import AuthContext from '../../Store/AuthManager';
 import ConfirmationPopup from "../Layout/ConfirmationPopup";
 import AddIcon from '@mui/icons-material/Add';
-import FlightAddPopup from "../FlightAddPopup";
-import { getAllHotels } from "../../Apis/Hotel.api";
+import HotelEditPopup from "../HotelEditPopup";
+import { addHotel, getAllHotels, updateHotel } from "../../Apis/Hotel.api";
+import HotelAddPopup from "../HotelAddPopup";
 const styles = {
     button: {
         backgroundColor: "#08ee65",
@@ -236,7 +236,7 @@ const Hotels = () => {
     const onHotelEdit = (hotelData) => {
         setEditPopupOpen(false);
         setIsLoading(true);
-        updateFlight(hotelData, authCtx.token)
+        updateHotel(hotelData, authCtx.token)
             .then((result) => {
                 setIsLoading(false);
                 if (result.status === 200) {
@@ -259,10 +259,10 @@ const Hotels = () => {
 
     }
 
-    const onFlightAdd = (hotelData) => {
+    const onHotelAdd = (hotelData) => {
         setAddHotelPopupOpen(false);
         setIsLoading(true);
-        addFlight(hotelData, authCtx.token)
+        addHotel(hotelData, authCtx.token)
             .then((result) => {
                 setIsLoading(false);
                 if (result.status === 200) {
@@ -378,7 +378,7 @@ const Hotels = () => {
             </Container>
             {
                 editPopupOpen ? (
-                    <FlightEditPopup
+                    <HotelEditPopup
                         title="HOTEL EDIT POPUP"
                         data={editHotelData}
                         isOpen={editPopupOpen}
@@ -391,11 +391,11 @@ const Hotels = () => {
             }
             {
                 addHotelPopupOpen ? (
-                    <FlightAddPopup
+                    <HotelAddPopup
                         title="HOTEL ADD POPUP"
                         isOpen={addHotelPopupOpen}
                         onClose={setAddHotelPopupOpen}
-                        onAdd={onFlightAdd}
+                        onAdd={onHotelAdd}
                     />
                 ) : (
                     <></>
